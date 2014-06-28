@@ -1,0 +1,58 @@
+<!DOCTYPE html><!--[if !IE]><html><![endif]--><!--[if lte IE 7]><html class="ie"><![endif]--><head><!--[if lt IE 9]><script> document.createElement("column"); document.createElement("message"); </script><![endif]-->
+  <title>Handshake.js | Home</title>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="min.css">
+  <link rel="stylesheet" href="custom.css">
+</head>
+<body>
+  <div class="mediumwidth">
+    <br/>
+    <br/>
+    <h1>Carte</h1>
+    <br />
+    <br />
+    <div class="card">
+      <div id="front">
+        <img src=""/>
+      </div>
+      <div id="back">
+      </div>
+    </div>
+  </div>
+
+  <script src="jquery.js"></script>
+  <script>
+    $card = $(".card");
+    $front = $("#front");
+    $back = $("#back");
+    var cards = [];
+
+    function newCard() {
+      var index = Math.floor(Math.random()*cards.length)
+      var card = cards[index];
+      $front.find("img").attr("src", card.front);
+      $back.html(card.back);
+    }
+
+    function clickedCard() {
+      if ( $back.hasClass("hide") ) {
+        $back.removeClass('hide');
+      } else {
+        newCard();
+        $back.addClass('hide');
+      }
+    }
+
+    $(function() {
+      $card.click(function() {
+        clickedCard();
+      });
+
+      $.getJSON( "cards.json", function( data ) {
+        cards = data.cards;
+        newCard();
+      });
+    });
+  </script>
+</body>
+</html>
