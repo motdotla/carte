@@ -1,5 +1,7 @@
 # carte
 
+<img src="https://raw.githubusercontent.com/scottmotte/carte/master/carte.png" alt="carte" align="right" width="226" />
+
 API of memory cards. I'm beginning this with people in my company.
 
 ## Usage
