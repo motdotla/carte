@@ -1,8 +1,6 @@
 # carte
 
-Under develompent.
-
-API of memory cards.
+API of memory cards. I'm beginning this with people in my company.
 
 ## Usage
 
