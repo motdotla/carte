@@ -36,3 +36,67 @@ Scroll to the bottom of the screen and double click the newly appended content.
 Paste that json content into [here](http://jsonformat.com/).
 
 Copy the results. Paste those results in cards.json.
+
+## API Overview
+
+The [carte.herokuapp.com](https://carte.herokuapp.com) API is based around REST. It uses standard HTTP authentication. JSON is returned in all responses from the API, including errors.
+
+I've tried to make it as easy to use as possible, but if you have any feedback please [let me know](mailto:scott@scottmotte.com).
+
+## Summary
+
+### API Endpoint
+
+* [https://carte-api.herokuapp.com/api/v0](https://carte-api.herokuapp.com/api/v0)
+
+### Decks
+
+To start using the carte API, you must first create a deck.
+
+#### ANY /decks/create 
+
+Pass an email and name to create your deck at carte-api.herokuapp.com.
+
+##### Definition
+
+```
+ANY https://carte-api.herokuapp.com/api/v0/decks/create.json?name=[name]&email=[email]&api_key=[api_key]
+```
+
+##### Required Parameters
+
+* email
+* name
+
+##### Optional Parameters
+
+* api_key
+
+##### Example Request
+
+<https://carte-api.herokuapp.com/api/v0/decks/create.json?name=[name]&email=[email]&api_key=[api_key]>
+
+##### Example Response
+
+```
+{
+  "decks": [{
+    "email": "test@example.com",
+    "name": "People Deck",
+    "api_key": "the_default_generated_api_key_that_you_should_keep_secret"
+  }]
+}
+```
+
+##### Example Error
+
+```
+{
+  errors: [{
+    "code": "required",
+    "field": "email",
+    "message": "email cannot be blank"
+  }]
+}
+```
+
