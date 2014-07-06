@@ -35,15 +35,13 @@ type Deck struct {
 func main() {
 	loadEnvs()
 
-	logic_options := handshakejslogic.Options{DbEncryptionSalt: DB_ENCRYPTION_SALT}
-
-	handshakejslogic.Setup(REDIS_URL, logic_options)
+	cartelogic.Setup(REDIS_URL)
 
 	m := martini.Classic()
 	m.Use(render.Renderer())
 	m.Use(CrossDomain())
 
-	m.Any("/api/v0/decks/create.json", binding.Bind(App{}), DecksCreate)
+	m.Any("/api/v0/decks/create.json", binding.Bind(Deck{}), DecksCreate)
 
 	m.Run()
 }
@@ -71,7 +69,7 @@ func DecksCreate(deck Deck, req *http.Request, r render.Render) {
 	api_key := deck.ApiKey
 
 	params := map[string]interface{}{"email": email, "name": name, "api_key": api_key}
-	result, logic_error := handshakejslogic.DecksCreate(params)
+	result, logic_error := cartelogic.DecksCreate(params)
 	if logic_error != nil {
 		payload := ErrorPayload(logic_error)
 		statuscode := determineStatusCodeFromLogicError(logic_error)
