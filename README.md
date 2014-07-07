@@ -49,24 +49,23 @@ I've tried to make it as easy to use as possible, but if you have any feedback p
 
 * [https://carte-api.herokuapp.com/api/v0](https://carte-api.herokuapp.com/api/v0)
 
-### Decks
+### Accounts
 
 To start using the carte API, you must first create a deck.
 
-#### ANY /decks/create 
+#### ANY /accounts/create 
 
-Pass an email and name to create your deck at carte-api.herokuapp.com.
+Pass an email to create your account at carte-api.herokuapp.com.
 
 ##### Definition
 
 ```
-ANY https://carte-api.herokuapp.com/api/v0/decks/create.json?name=[name]&email=[email]&api_key=[api_key]
+ANY https://carte-api.herokuapp.com/api/v0/accounts/create.json?&email=[email]&api_key=[api_key]
 ```
 
 ##### Required Parameters
 
 * email
-* name
 
 ##### Optional Parameters
 
@@ -74,15 +73,14 @@ ANY https://carte-api.herokuapp.com/api/v0/decks/create.json?name=[name]&email=[
 
 ##### Example Request
 
-<https://carte-api.herokuapp.com/api/v0/decks/create.json?name=[name]&email=[email]&api_key=[api_key]>
+<https://carte-api.herokuapp.com/api/v0/accounts/create.json?email=[email]&api_key=[api_key]>
 
 ##### Example Response
 
 ```
 {
-  "decks": [{
+  "accounts": [{
     "email": "test@example.com",
-    "name": "People Deck",
     "api_key": "the_default_generated_api_key_that_you_should_keep_secret"
   }]
 }
@@ -96,6 +94,50 @@ ANY https://carte-api.herokuapp.com/api/v0/decks/create.json?name=[name]&email=[
     "code": "required",
     "field": "email",
     "message": "email cannot be blank"
+  }]
+}
+```
+
+#### ANY /cards/create
+
+Pass an api_key, front, and back to create your card.
+
+##### Definition
+
+```
+ANY https://carte-api.herokuapp.com/api/v0/cards/create.json?api_key=[api_key]&front=[front]&back=[back]
+```
+
+##### Required Parameters
+
+* api_key
+* front
+* back
+
+##### Example Request
+
+<https://carte-api.herokuapp.com/api/v0/cards/create.json?api_key=[api_key]&front=[front]&back=[back]>
+
+##### Example Response
+
+```
+{
+  "cards": [{
+    "id": "12345",
+    "front": "<img src='http://example.com/some-image.jpg'>",
+    "back": "John Doe",
+  }]
+}
+```
+
+##### Example Error
+
+```
+{
+  errors: [{
+    "code": "required",
+    "field": "front",
+    "message": "front cannot be blank"
   }]
 }
 ```

@@ -26,10 +26,15 @@ func CrossDomain() martini.Handler {
 	}
 }
 
-type Deck struct {
-	Name   string `form:"name" json:"name"`
+type Account struct {
 	Email  string `form:"email" json:"email"`
 	ApiKey string `form:"api_key" json:"api_key"`
+}
+
+type Card struct {
+	ApiKey string `form:"api_key" json:"api_key"`
+	Front  string `form:"front" json:"front"`
+	Back   string `form:"back" json:"back"`
 }
 
 func main() {
@@ -41,7 +46,8 @@ func main() {
 	m.Use(render.Renderer())
 	m.Use(CrossDomain())
 
-	m.Any("/api/v0/decks/create.json", binding.Bind(Deck{}), DecksCreate)
+	m.Any("/api/v0/accounts/create.json", binding.Bind(Account{}), AccountsCreate)
+	m.Any("/api/v0/cards/create.json", binding.Bind(Card{}), CardsCreate)
 
 	m.Run()
 }
@@ -55,27 +61,57 @@ func ErrorPayload(logic_error *handshakejserrors.LogicError) map[string]interfac
 	return payload
 }
 
-func DecksPayload(deck map[string]interface{}) map[string]interface{} {
-	decks := []interface{}{}
-	decks = append(decks, deck)
-	payload := map[string]interface{}{"decks": decks}
+func AccountsPayload(account map[string]interface{}) map[string]interface{} {
+	accounts := []interface{}{}
+	accounts = append(accounts, account)
+	payload := map[string]interface{}{"accounts": accounts}
 
 	return payload
 }
 
-func DecksCreate(deck Deck, req *http.Request, r render.Render) {
-	email := deck.Email
-	name := deck.Name
-	api_key := deck.ApiKey
+func AccountsCreate(account Account, req *http.Request, r render.Render) {
+	email := account.Email
+	api_key := account.ApiKey
 
-	params := map[string]interface{}{"email": email, "name": name, "api_key": api_key}
-	result, logic_error := cartelogic.DecksCreate(params)
+	params := map[string]interface{}{"email": email, "api_key": api_key}
+	result, logic_error := cartelogic.AccountsCreate(params)
 	if logic_error != nil {
 		payload := ErrorPayload(logic_error)
 		statuscode := determineStatusCodeFromLogicError(logic_error)
 		r.JSON(statuscode, payload)
 	} else {
-		payload := DecksPayload(result)
+		payload := AccountsPayload(result)
+		r.JSON(200, payload)
+	}
+}
+
+func CardsPayload(card map[string]interface{}) map[string]interface{} {
+	front := card["front"].(string)
+	back := card["back"].(string)
+	id := card["id"].(string)
+
+	cards := []interface{}{}
+	output_card := map[string]interface{}{"front": front, "back": back, "id": id}
+	cards = append(cards, output_card)
+
+	payload := map[string]interface{}{"cards": cards}
+
+	return payload
+}
+
+func CardsCreate(card Card, req *http.Request, r render.Render) {
+	front := card.Front
+	back := card.Back
+	api_key := card.ApiKey
+
+	params := map[string]interface{}{"front": front, "back": back, "api_key": api_key}
+	result, logic_error := cartelogic.CardsCreate(params)
+	if logic_error != nil {
+		payload := ErrorPayload(logic_error)
+		statuscode := determineStatusCodeFromLogicError(logic_error)
+		r.JSON(statuscode, payload)
+	} else {
+		payload := CardsPayload(result)
 		r.JSON(200, payload)
 	}
 }
@@ -92,6 +128,5 @@ func determineStatusCodeFromLogicError(logic_error *handshakejserrors.LogicError
 func loadEnvs() {
 	godotenv.Load()
 
-	DB_ENCRYPTION_SALT = os.Getenv("DB_ENCRYPTION_SALT")
 	REDIS_URL = os.Getenv("REDIS_URL")
 }
